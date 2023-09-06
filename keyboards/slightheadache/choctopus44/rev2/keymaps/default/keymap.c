@@ -59,17 +59,12 @@ layer_state_t layer_state_set_user(layer_state_t state) {
   return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
-bool encoder_update_user(uint8_t index, bool clockwise) {
-    switch(biton32(layer_state)) {
-      case _RAISE:
-        clockwise ? tap_code(KC_VOLU) : tap_code(KC_VOLD);
-        break;
-      case _LOWER:
-        clockwise ? tap_code(KC_MNXT) : tap_code(KC_MPRV);
-        break;
-      default:
-        clockwise ? tap_code(KC_PGUP) : tap_code(KC_PGDN);
-        break;
-    }
-    return true;
-}
+#if defined(ENCODER_MAP_ENABLE)
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
+    [0] = { ENCODER_CCW_CW(KC_DOWN,   KC_UP)},
+    [1] = { ENCODER_CCW_CW(KC_RIGHT,  KC_LEFT)},
+    [2] = { ENCODER_CCW_CW(KC_PGDN,   KC_PGUP)},
+    [3] = { ENCODER_CCW_CW(XXXXXXX,   XXXXXXX)},
+};
+#endif
+
